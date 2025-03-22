@@ -14,7 +14,7 @@
       animation: pulse 1.5s infinite;
     }
     .pattern-BINGO { outline: 3px solid gold; }
-    .pattern-FOUR\ CORNERS { outline: 3px solid red; }
+    .pattern-4 \ CORNERS { outline: 3px solid red; }
     .pattern-T { outline: 3px solid blue; }
     .pattern-STAMP { outline: 3px solid purple; }
     .pattern-PERIMETER { outline: 3px solid green; }
@@ -187,7 +187,7 @@
 
       const patternPoints = {
         'BINGO': 10,
-        'FOUR CORNERS': 15,
+        '4 CORNERS': 15,
         'STAMP': 20,
         'T': 35,
         'PERIMETER': 40,
@@ -244,7 +244,7 @@
             [(gridSize-2)*gridSize,(gridSize-2)*gridSize+1,(gridSize-1)*gridSize,(gridSize-1)*gridSize+1],
             [(gridSize-2)*gridSize+gridSize-2,(gridSize-2)*gridSize+gridSize-1,(gridSize-1)*gridSize+gridSize-2,(gridSize-1)*gridSize+gridSize-1]
           ],
-          'FOUR CORNERS': [[0, gridSize-1, (gridSize-1)*gridSize, gridSize*gridSize-1]],
+          '4 CORNERS': [[0, gridSize-1, (gridSize-1)*gridSize, gridSize*gridSize-1]],
           'BINGO': [
             ...Array.from({length: gridSize}, (_, i) => Array.from({length: gridSize}, (_, j) => i * gridSize + j)),
             ...Array.from({length: gridSize}, (_, i) => Array.from({length: gridSize}, (_, j) => j * gridSize + i)),
