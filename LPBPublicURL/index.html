@@ -5,119 +5,184 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>License Plate Bingo & Kid Colors</title>
   <style>
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(255,255,0,0.7); }
-      70% { box-shadow: 0 0 0 10px rgba(255,255,0,0); }
-      100% { box-shadow: 0 0 0 0 rgba(255,255,0,0); }
-    }
-    .pulse {
-      animation: pulse 1.5s infinite;
-    }
-    .pattern-BINGO { outline: 3px solid gold; }
-    .pattern-4 \ CORNERS { outline: 3px solid red; }
-    .pattern-T { outline: 3px solid blue; }
-    .pattern-STAMP { outline: 3px solid purple; }
-    .pattern-PERIMETER { outline: 3px solid green; }
-    .pattern-COVER\ ALL { outline: 3px solid black; }
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      position: relative;
+    /* Basic Reset & Mobile-First Defaults */
+    * {
+      box-sizing: border-box;
       margin: 0;
-      padding: 20px;
+      padding: 0;
     }
-    #bingo-board {
-      display: grid;
-      gap: 10px;
-      max-width: 600px;
-      margin: 20px auto;
-    }
-    .bingo-cell {
-      border: 1px solid #ccc;
-      padding: 10px;
+
+    body {
+      font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
       text-align: center;
-      cursor: pointer;
-      background-color: white;
-      transition: transform 0.2s ease-in-out;
+      background-color: #f0f0f0; /* Light background for the page */
+      padding: 10px;
+      color: #333;
+      line-height: 1.5;
     }
-    .bingo-cell:hover {
-      transform: scale(1.05);
+
+    .app-container {
+      background-color: #ffffff; /* White background for game area */
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      max-width: 600px; /* Max width of the game container */
+      margin: 0 auto; /* Center the container */
     }
-    .bingo-cell img {
-      width: 100%;
-      height: auto;
+
+    h1 {
+      font-size: 1.6em; /* Adjusted for better mobile fit */
+      margin-bottom: 15px;
+      color: #333;
     }
-    .bingo-cell.marked {
-      background-color: #d3ffd3;
-    }
-    .bingo-cell.marked-color {
-      border: 5px solid #ff0000;
-    }
-    .bingo-cell.square {
-      position: relative;
-    }
-    .bingo-cell.square::before {
-      content: "";
-      display: block;
-      padding-top: 100%;
-    }
-    .bingo-cell.square > div {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-    #bingo-message {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 4em;
-      display: none;
-      pointer-events: none;
-    }
-    /* Slight transparency for the winning message */
-    .winning-message {
-      color: red;
+
+    #score {
+      font-size: 1.2em;
+      margin-bottom: 10px;
       font-weight: bold;
-      text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 2px 2px 0 #fff;
-      opacity: 0.6; /* makes text semi-transparent */
     }
+
+    label[for="sound-toggle"] {
+      display: inline-block; 
+      margin-bottom: 15px;
+      font-size: 0.9em;
+      vertical-align: middle;
+    }
+    #sound-toggle {
+      vertical-align: middle;
+      margin-right: 4px;
+    }
+    
+    .game-type-buttons, .action-buttons-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 15px;
+    }
+
     .game-button {
-      width: 150px;
-      height: 50px;
-      margin: 10px;
+      padding: 10px 15px;
       border: none;
       color: white;
-      font-size: 16px;
+      font-size: 0.9em;
+      font-weight: bold;
       cursor: pointer;
-      border-radius: 5px;
+      border-radius: 6px;
+      flex-grow: 1; 
+      min-width: 120px; 
+      transition: background-color 0.2s ease, transform 0.1s ease;
     }
-    #usa-game {
-      background-color: blue;
+    .game-button:active {
+      transform: translateY(1px);
     }
-    #east-coast-game {
-      background-color: green;
+
+    #usa-game { background-color: #007bff; }
+    #east-coast-game { background-color: #28a745; }
+    #kid-colors-game { background-color: #6f42c1; }
+    #generate-board { background-color: #dc3545; }
+    #free-pick { background-color: #fd7e14; } /* Orange */
+
+
+    #bingo-board {
+      display: grid;
+      gap: 6px; 
+      width: 100%; 
+      margin: 20px auto;
     }
-    #kid-colors-game {
-      background-color: purple;
+
+    .bingo-cell {
+      border: 1px solid #ccc; /* Default border */
+      text-align: center;
+      cursor: pointer;
+      background-color: white; /* Default background for license plate cells before marking */
+      transition: transform 0.1s ease-in-out, background-color 0.2s ease, border-color 0.2s ease, border-width 0.2s ease, box-shadow 0.2s ease, outline 0.2s ease;
+      border-radius: 4px;
+      padding: 5px;       
+      display: flex;
+      flex-direction: column;
+      justify-content: center; 
+      align-items: center;
+      overflow: hidden; 
+      aspect-ratio: 5 / 4; 
+      font-size: 0.7em; 
     }
-    #generate-board {
-      background-color: red;
+
+    .bingo-cell:hover:not(:active) { 
+      border-color: #aaa;
     }
-    #free-pick {
-      background-color: darkorange;
+     .bingo-cell:active {
+      transform: scale(0.97); /* General active state press */
     }
-    #score {
-      font-size: 1.5em;
-      margin-top: 10px;
+
+    .bingo-cell img {
+      max-width: 90%;
+      max-height: 65%; 
+      object-fit: contain; 
+      margin-bottom: 4px; 
     }
-    @media (max-width: 600px) {
-      .game-button {
-        width: 100%;
-        margin: 5px 0;
-      }
+
+    .bingo-cell .cell-name {
+      font-weight: bold;
+      line-height: 1.1;
+      width: 100%; 
+      word-break: break-word; 
     }
+    .bingo-cell .cell-name.free-play-text {
+      font-size: 1.2em; 
+      color: #e85a17;
+    }
+    
+    .bingo-cell.square { 
+      aspect-ratio: 1 / 1; 
+      background-color: transparent; /* Color squares get their color from inline style, default BG transparent */
+    }
+    .bingo-cell.square .cell-name {
+      font-size: 1.1em;
+      color: white;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.6); 
+    }
+    .bingo-cell.square img {
+        display: none; 
+    }
+
+    /* --- MODIFIED MARKED STYLES START --- */
+    /* General marked style for license plates (non-square cells) */
+    .bingo-cell:not(.square).marked {
+      background-color: #d4edda; /* Light green background */
+      border-color: #c3e6cb;     /* Border to match */
+    }
+    /* This rule ensures free play text remains orange if it's a non-square cell */
+    .bingo-cell:not(.square).marked .cell-name.free-play-text {
+      color: #e85a17; 
+    }
+
+    /* Marked style for Kid Colors game cells (square cells) */
+    .bingo-cell.square.marked {
+      /* The background-color for these cells is set via inline style in JS and should remain. */
+      /* We don't want the #d4edda background from the general rule. */
+      border: 4px solid gold;   /* Thick, bright gold border for high visibility */
+      transform: scale(0.93);     /* "Pressed" effect, makes it look selected */
+      /* The .cell-name text (white with shadow) should still be perfectly readable */
+    }
+    /* --- MODIFIED MARKED STYLES END --- */
+        
+    #bingo-message {
+      font-size: 1.2em; 
+      display: none; 
+      z-index: 10; 
+      padding: 8px 15px;
+      text-align: center;
+      margin-top: 15px; 
+      line-height: 1.4; 
+      word-wrap: break-word; 
+      max-width: 100%;
+    }
+    .winning-message { 
+      color: #d9534f; 
+      font-weight: bold;
+    }
+
     .confetti {
       position: fixed;
       top: 0;
@@ -127,33 +192,61 @@
       pointer-events: none;
       z-index: 999;
     }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(255,215,0,0.7); } 
+      70% { box-shadow: 0 0 0 10px rgba(255,215,0,0); }
+      100% { box-shadow: 0 0 0 0 rgba(255,215,0,0); }
+    }
+    .pulse {
+      animation: pulse 1.2s infinite;
+    }
+    .pattern-BINGO { outline: 3px solid gold; outline-offset: -1px; }
+    .pattern-FOUR-CORNERS { outline: 3px solid red; outline-offset: -1px; }
+    .pattern-STAMP { outline: 3px solid purple; outline-offset: -1px; }
+    .pattern-T { outline: 3px solid blue; outline-offset: -1px; }
+    .pattern-PERIMETER { outline: 3px solid green; outline-offset: -1px; }
+    .pattern-COVER-ALL { outline: 3px solid black; outline-offset: -1px; }
+
+    @media (min-width: 480px) {
+      h1 { font-size: 2em; }
+      .game-button { font-size: 1em; padding: 12px 20px; }
+      #bingo-board { gap: 8px; }
+      .bingo-cell { font-size: 0.8em; }
+      #bingo-message { font-size: 1.4em; } 
+    }
   </style>
 </head>
 <body>
-  <h1>License Plate Bingo & Kid Colors</h1>
-  <div id="score">Score: 0</div>
-  <label style="display:block; margin-top:10px;">
-    <input type="checkbox" id="sound-toggle" checked /> Sound On
-  </label>
-  <button id="usa-game" class="game-button">USA</button>
-  <button id="east-coast-game" class="game-button">East Coast</button>
-  <button id="kid-colors-game" class="game-button">Kid Colors</button>
-  
-  <div id="bingo-board"></div>
+  <div class="app-container">
+    <h1>License Plate Bingo & Kid Colors</h1>
+    <div id="score">Score: 0</div>
+    <label for="sound-toggle">
+      <input type="checkbox" id="sound-toggle" checked /> Sound On
+    </label>
+    
+    <div class="game-type-buttons">
+      <button id="usa-game" class="game-button">USA</button>
+      <button id="east-coast-game" class="game-button">East Coast</button>
+      <button id="kid-colors-game" class="game-button">Kid Colors</button>
+    </div>
+    
+    <div id="bingo-board"></div>
 
-  <!-- Aligned container for Generate New Board and Free Pick -->
-  <div style="display:flex; justify-content:center; align-items:center; gap:10px;">
-    <button id="generate-board" class="game-button">Generate New Board</button>
-    <button id="free-pick" class="game-button">Free Pick</button>
+    <div class="action-buttons-container">
+      <button id="generate-board" class="game-button">New Board</button>
+      <button id="free-pick" class="game-button">Free Pick</button>
+    </div>
+
+    <div id="bingo-message" class="winning-message"></div>
   </div>
 
-  <div id="bingo-message" class="winning-message"></div>
   <canvas id="confetti-canvas" class="confetti"></canvas>
-  <audio id="bingo-audio" src="bingo_winner.mp3"></audio>
+  <audio id="bingo-audio" src="bingo_winner.mp3" preload="auto"></audio>
   <audio id="click-audio" preload="auto" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
 
   <script>
-    (function () {
+    document.addEventListener('DOMContentLoaded', () => {
       const stateNames = {
         'AL': 'Alabama', 'AK': 'Alaska', 'AZ': 'Arizona', 'AR': 'Arkansas', 'CA': 'California',
         'CO': 'Colorado', 'CT': 'Connecticut', 'DE': 'Delaware', 'FL': 'Florida', 'GA': 'Georgia',
@@ -166,199 +259,265 @@
         'SD': 'South Dakota', 'TN': 'Tennessee', 'TX': 'Texas', 'UT': 'Utah', 'VT': 'Vermont',
         'VA': 'Virginia', 'WA': 'Washington', 'WV': 'West Virginia', 'WI': 'Wisconsin', 'WY': 'Wyoming'
       };
-
       const eastStates = {
-        'AL': 'Alabama', 'CT': 'Connecticut', 'DE': 'Delaware', 'FL': 'Florida', 'GA': 'Georgia',
-        'IL': 'Illinois', 'IN': 'Indiana', 'KY': 'Kentucky', 'ME': 'Maine', 'MD': 'Maryland',
-        'MA': 'Massachusetts', 'MI': 'Michigan', 'MS': 'Mississippi', 'NH': 'New Hampshire',
-        'NJ': 'New Jersey', 'NY': 'New York', 'NC': 'North Carolina', 'OH': 'Ohio', 'PA': 'Pennsylvania',
-        'RI': 'Rhode Island', 'SC': 'South Carolina', 'TN': 'Tennessee', 'VT': 'Vermont', 'VA': 'Virginia',
-        'WV': 'West Virginia', 'WI': 'Wisconsin'
-      };
-
+        'ME': 'Maine', 'NH': 'New Hampshire', 'VT': 'Vermont', 'MA': 'Massachusetts', 'RI': 'Rhode Island', 'CT': 'Connecticut', 
+        'NY': 'New York', 'NJ': 'New Jersey', 'PA': 'Pennsylvania', 'DE': 'Delaware', 'MD': 'Maryland', 'VA': 'Virginia', 
+        'WV': 'West Virginia', 'NC': 'North Carolina', 'SC': 'South Carolina', 'GA': 'Georgia', 'FL': 'Florida', 
+        'OH': 'Ohio', 'MI': 'Michigan', 'IN': 'Indiana', 'KY': 'Kentucky', 'TN': 'Tennessee', 'AL': 'Alabama', 'MS': 'Mississippi', 'IL': 'Illinois', 'WI': 'Wisconsin'
+      }; 
       const colors = [
-        'Red','Green','Blue','Yellow','Purple','Orange','Pink','Brown','Black','White','Cyan','Magenta','Lime','Teal','Navy','Gray'
-      ];
+        'Red','Green','Blue','Yellow','Purple','Orange','Pink','Brown','Black','White','Cyan','Magenta','Lime','Teal','Navy','Gray','Silver','Maroon','Olive','Aqua','Indigo','Violet','Gold','Crimson','Turquoise'
+      ]; 
 
       const GRID_USA = 5, GRID_KIDS = 4;
       let score = 0;
       let achievedPatterns = new Set();
-      let currentIsColorGame = false; // Tracks whether current game is a color game
+      let currentIsColorGame = false;
+      let currentGridSize = GRID_USA;
 
       const patternPoints = {
         'BINGO': 10,
-        '4 CORNERS': 15,
+        'FOUR CORNERS': 15,
         'STAMP': 20,
         'T': 35,
         'PERIMETER': 40,
         'COVER ALL': 60
       };
 
+      const scoreEl = document.getElementById('score');
+      const soundToggle = document.getElementById('sound-toggle');
+      const bingoBoardEl = document.getElementById('bingo-board');
+      const bingoMessageEl = document.getElementById('bingo-message');
+      const bingoAudio = document.getElementById('bingo-audio');
+      const clickAudio = document.getElementById('click-audio');
+      const confettiCanvas = document.getElementById('confetti-canvas');
+
       function resetGameState() {
         score = 0;
         achievedPatterns.clear();
-        document.getElementById('score').textContent = `Score: ${score}`;
+        scoreEl.textContent = `Score: ${score}`;
+        bingoMessageEl.style.display = 'none';
+        bingoMessageEl.textContent = '';
+        document.querySelectorAll('.bingo-cell').forEach(cell => {
+            cell.classList.remove('pulse');
+            Object.keys(patternPoints).forEach(pName => cell.classList.remove(`pattern-${pName.replace(/\s+/g, '-')}`));
+        });
+        stopConfetti(confettiCanvas);
       }
 
-      function updateScore(pattern) {
-        if (!achievedPatterns.has(pattern)) {
-          score += patternPoints[pattern];
-          achievedPatterns.add(pattern);
-          document.getElementById('score').textContent = `Score: ${score}`;
-          return true;
+      function updateScore(patternName) {
+        if (patternPoints[patternName] !== undefined) {
+            score += patternPoints[patternName];
+            achievedPatterns.add(patternName);
+            scoreEl.textContent = `Score: ${score}`;
+            return true; 
         }
+        console.warn(`Attempted to score pattern "${patternName}" with no defined points.`);
         return false;
       }
 
       function shuffle(array) {
-        for (let i = array.length - 1; i > 0; i--) {
+        const newArray = [...array];
+        for (let i = newArray.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
-          [array[i], array[j]] = [array[j], array[i]];
+          [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
         }
-        return array;
+        return newArray;
       }
 
-      function checkBingo(gridSize) {
-        // Exclude any special cells from bingo pattern detection.
-        const cells = document.querySelectorAll('.bingo-cell:not(.bonus-cell)');
-        const board = Array.from(cells).map(cell => cell.classList.contains('marked'));
-        const message = document.getElementById('bingo-message');
-        const audio = document.getElementById('bingo-audio');
-
-        const patterns = {
-          'COVER ALL': [Array.from({length: gridSize * gridSize}, (_, i) => i)],
-          'PERIMETER': [
-            Array.from({length: gridSize}, (_, i) => i)
-              .concat(Array.from({length: gridSize - 2}, (_, i) => (i + 1) * gridSize + gridSize - 1))
-              .concat(Array.from({length: gridSize}, (_, i) => gridSize * (gridSize - 1) + i))
-              .concat(Array.from({length: gridSize - 2}, (_, i) => (i + 1) * gridSize))
-          ],
-          'T': [
-            Array.from({length: gridSize}, (_, i) => i)
-              .concat(Array.from({length: gridSize - 1}, (_, i) => Math.floor(gridSize / 2) + i * gridSize))
-              .concat([gridSize * (gridSize - 1) + Math.floor(gridSize / 2)])
-          ],
-          'STAMP': [
-            [0,1,gridSize,gridSize+1],
-            [gridSize-2,gridSize-1,2*gridSize-2,2*gridSize-1],
-            [(gridSize-2)*gridSize,(gridSize-2)*gridSize+1,(gridSize-1)*gridSize,(gridSize-1)*gridSize+1],
-            [(gridSize-2)*gridSize+gridSize-2,(gridSize-2)*gridSize+gridSize-1,(gridSize-1)*gridSize+gridSize-2,(gridSize-1)*gridSize+gridSize-1]
-          ],
-          '4 CORNERS': [[0, gridSize-1, (gridSize-1)*gridSize, gridSize*gridSize-1]],
-          'BINGO': [
-            ...Array.from({length: gridSize}, (_, i) => Array.from({length: gridSize}, (_, j) => i * gridSize + j)),
-            ...Array.from({length: gridSize}, (_, i) => Array.from({length: gridSize}, (_, j) => j * gridSize + i)),
-            [0, (gridSize+1)*1, (gridSize+1)*2, (gridSize+1)*3, (gridSize+1)*4],
-            [gridSize-1, (gridSize-1)*2, (gridSize-1)*3, (gridSize-1)*4, (gridSize-1)*5]
-          ]
+      function getPatternDefinitions(G) { 
+        const definitions = {
+          'BINGO': [],
+          'FOUR CORNERS': G >= 2 ? [[0, G - 1, G * (G - 1), G * G - 1]] : [],
+          'STAMP': [], 
+          'T': [],
+          'PERIMETER': [],
+          'COVER ALL': G > 0 ? [Array.from({ length: G * G }, (_, i) => i)] : [],
         };
 
-        const scoredPatterns = [];
-        const found = Object.entries(patterns).filter(([pattern, lines]) =>
-          lines.some(line => line.every(i => board[i]))
-        ).map(([pattern]) => {
-          if (!achievedPatterns.has(pattern)) {
-            scoredPatterns.push(pattern);
-          }
-          return pattern;
-        });
-
-        scoredPatterns.forEach(pattern => {
-          updateScore(pattern);
-          audio.pause();
-          audio.currentTime = 0;
-          if (document.getElementById('sound-toggle').checked) audio.play();
-        });
-
-        message.textContent = found.join(', ');
-        message.style.display = found.length ? 'block' : 'none';
-
-        const confetti = document.getElementById('confetti-canvas');
-        if (scoredPatterns.length) {
-          startConfetti(confetti);
-          setTimeout(() => stopConfetti(confetti), 2000);
-        } else {
-          stopConfetti(confetti);
-        }
-
-        // Highlight matching cells
-        cells.forEach(cell => {
-          cell.classList.remove('pulse', ...Array.from(patternPoints, ([k]) => `pattern-${k.replace(/ /g, '-')}`));
-        });
-
-        found.forEach(pattern => {
-          const lines = patterns[pattern];
-          lines.forEach(line => {
-            if (line.every(i => board[i])) {
-              line.forEach(i => {
-                const cell = cells[i];
-                cell.classList.add('pulse', `pattern-${pattern.replace(/ /g, '-')}`);
-              });
+        if (G > 0) { 
+            for (let i = 0; i < G; i++) {
+            definitions['BINGO'].push(Array.from({ length: G }, (_, j) => i * G + j)); 
+            definitions['BINGO'].push(Array.from({ length: G }, (_, j) => j * G + i)); 
             }
-          });
-        });
+            definitions['BINGO'].push(Array.from({ length: G }, (_, i) => i * (G + 1))); 
+            definitions['BINGO'].push(Array.from({ length: G }, (_, i) => (i + 1) * (G - 1))); 
+            
+            const topRowT = Array.from({ length: G }, (_, c) => c);
+            const middleColT = Array.from({ length: G }, (_, r) => r * G + Math.floor(G / 2));
+            definitions['T'].push([...new Set([...topRowT, ...middleColT])]);
+            
+            if (G >= 1) { 
+                const perimeterIndices = new Set();
+                for (let i = 0; i < G; i++) {
+                    perimeterIndices.add(i); 
+                    perimeterIndices.add(G * (G - 1) + i); 
+                    perimeterIndices.add(i * G); 
+                    perimeterIndices.add(i * G + (G - 1)); 
+                }
+                definitions['PERIMETER'].push(Array.from(perimeterIndices));
+            }
+
+            if (G >= 2) {
+                definitions['STAMP'].push([0, 1, G, G + 1]); 
+                definitions['STAMP'].push([G - 2, G - 1, G + (G - 2), G + (G - 1)]); 
+                definitions['STAMP'].push([G * (G - 2), G * (G - 2) + 1, G * (G - 1), G * (G - 1) + 1]); 
+                definitions['STAMP'].push([G * (G - 1) - 2, G * (G - 1) - 1, G * G - 2, G * G - 1]); 
+            }
+        }
+        
+        for (const key in definitions) {
+            definitions[key] = definitions[key].filter(line => line && line.length > 0);
+        }
+        return definitions;
       }
 
-      function generateBoard(items, gridSize, isColorGame = false) {
-        resetGameState();
-        currentIsColorGame = isColorGame;
-        const board = document.getElementById('bingo-board');
-        board.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
-        board.innerHTML = '';
-        const shuffledItems = shuffle(isColorGame ? items : Object.keys(items)).slice(0, gridSize * gridSize);
+      function checkBingo() {
+        const allVisualCells = document.querySelectorAll('#bingo-board .bingo-cell:not(.bonus-cell)');
+        const fullBoardState = Array.from(allVisualCells).map(cell => cell.classList.contains('marked'));
 
-        shuffledItems.forEach((item, index) => {
-          const cell = document.createElement('button');
-          cell.className = 'bingo-cell';
-          if (isColorGame) {
-            cell.classList.add('square');
-            cell.style.backgroundColor = item.toLowerCase();
-            cell.innerHTML = `<div>${item}</div>`;
-          } else if (index === Math.floor(gridSize * gridSize / 2)) {
-            // Middle cell is "Free Play"
-            cell.classList.add('marked');
-            cell.innerHTML = `<div>Free Play</div>`;
-          } else {
-            cell.innerHTML = `<img src="images/${item}.png" alt="${items[item]}" onerror="this.style.display='none'"><div>${items[item]}</div>`;
-            cell.dataset.state = item;
-          }
+        if (allVisualCells.length !== currentGridSize * currentGridSize && allVisualCells.length > 0) {
+            console.warn("Visual cell count for checkBingo mismatch. Expected:", currentGridSize * currentGridSize, "Found:", allVisualCells.length);
+        }
+        if (allVisualCells.length === 0) return;
 
-          cell.addEventListener('click', () => {
-            if (cell.classList.contains('bonus-cell')) return;
-            cell.classList.toggle('marked');
-            if (!cell.classList.contains('marked')) {
-              cell.classList.remove('pulse');
-              Object.keys(patternPoints).forEach(p => cell.classList.remove(`pattern-${p.replace(/ /g, '-')}`));
-              cell.style.outline = '';
+
+        const currentPatterns = getPatternDefinitions(currentGridSize);
+        let scoredThisCheck = false;
+
+        Object.keys(patternPoints).forEach(patternName => {
+          if (achievedPatterns.has(patternName)) return; 
+
+          if (currentPatterns[patternName] && currentPatterns[patternName].length > 0) {
+            if (currentPatterns[patternName].some(line => line.every(index => index < fullBoardState.length && fullBoardState[index]))) {
+              if (updateScore(patternName)) { 
+                  scoredThisCheck = true;
+              }
             }
-            if (isColorGame) cell.classList.toggle('marked-color');
-            const clickAudio = document.getElementById('click-audio');
-            clickAudio.pause();
-            clickAudio.currentTime = 0;
-            if (!document.getElementById('sound-toggle').checked) return;
-            clickAudio.volume = 0.6;
-            clickAudio.play().catch(() => {});
-            checkBingo(gridSize);
-          });
+          }
+        });
+        
+        const allAchievedPatternNames = Array.from(achievedPatterns);
+        bingoMessageEl.textContent = allAchievedPatternNames.join(', '); 
+        bingoMessageEl.style.display = allAchievedPatternNames.length ? 'block' : 'none';
 
-          board.appendChild(cell);
+        if (scoredThisCheck) {
+          if (soundToggle.checked) {
+            bingoAudio.pause();
+            bingoAudio.currentTime = 0;
+            bingoAudio.play().catch(e => console.error("Error playing bingo sound:", e));
+          }
+          startConfetti(confettiCanvas);
+          setTimeout(() => stopConfetti(confettiCanvas), 3000);
+        }
+
+        allVisualCells.forEach(cell => { 
+            cell.classList.remove('pulse');
+            Object.keys(patternPoints).forEach(pName => cell.classList.remove(`pattern-${pName.replace(/\s+/g, '-')}`));
         });
 
-        document.getElementById('bingo-message').style.display = 'none';
+        allAchievedPatternNames.forEach(pName => {
+          if (currentPatterns[pName] && currentPatterns[pName].length > 0) {
+            currentPatterns[pName].forEach(lineIndices => {
+              if (lineIndices.every(index => index < fullBoardState.length && fullBoardState[index])) {
+                lineIndices.forEach(index => {
+                  if (allVisualCells[index]) {
+                      allVisualCells[index].classList.add('pulse', `pattern-${pName.replace(/\s+/g, '-')}`);
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
+      
+      function generateBoard(items, gridSize, isColorGame = false) {
+        currentIsColorGame = isColorGame;
+        currentGridSize = gridSize;
+        resetGameState();
+
+        bingoBoardEl.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+        bingoBoardEl.innerHTML = '';
+        
+        const boardSize = gridSize * gridSize;
+        let finalBoardItems = [];
+        let sourceItemsPool = shuffle(isColorGame ? items : Object.keys(items));
+
+        if (!isColorGame && gridSize > 0 && gridSize % 2 !== 0) { 
+            const itemsToPick = boardSize - 1;
+            finalBoardItems = sourceItemsPool.slice(0, itemsToPick);
+            const middleIndex = Math.floor(boardSize / 2);
+            finalBoardItems.splice(middleIndex, 0, "FREEPLAY_MARKER"); 
+        } else { 
+            finalBoardItems = sourceItemsPool.slice(0, boardSize);
+        }
+
+        while (finalBoardItems.length < boardSize) {
+            finalBoardItems.push("PLACEHOLDER_EMPTY");
+        }
+
+        for (let i = 0; i < boardSize; i++) {
+            const cell = document.createElement('button'); 
+            cell.className = 'bingo-cell';
+            
+            const currentItem = finalBoardItems[i];
+
+            if (currentItem === "PLACEHOLDER_EMPTY") {
+                cell.innerHTML = `<div class="cell-name">N/A</div>`;
+                cell.disabled = true; 
+                cell.style.cursor = "default";
+                cell.style.backgroundColor = "#f8f9fa"; 
+            } else if (isColorGame) {
+                cell.classList.add('square');
+                cell.style.backgroundColor = currentItem.toLowerCase(); // Set the color cell's background
+                cell.innerHTML = `<div class="cell-name">${currentItem}</div>`;
+                cell.dataset.item = currentItem;
+            } else if (currentItem === "FREEPLAY_MARKER") {
+                cell.classList.add('marked'); 
+                cell.innerHTML = `<div class="cell-name free-play-text">Free Play</div>`;
+                cell.dataset.item = "FREEPLAY"; 
+            } else { 
+                const stateName = items[currentItem] || "Unknown";
+                cell.innerHTML = `<img src="images/${currentItem}.png" alt="${stateName}" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.marginTop='auto';">
+                                  <div class="cell-name">${stateName}</div>`;
+                cell.dataset.item = currentItem;
+            }
+
+            if (!cell.disabled) {
+              cell.addEventListener('click', () => {
+                cell.classList.toggle('marked');
+                
+                if (soundToggle.checked) {
+                  clickAudio.pause();
+                  clickAudio.currentTime = 0;
+                  clickAudio.volume = 0.5;
+                  clickAudio.play().catch(e => console.error("Error playing click sound:", e));
+                }
+                checkBingo();
+              });
+            }
+            bingoBoardEl.appendChild(cell);
+        }
+        
+        if (!isColorGame && gridSize > 0 && gridSize % 2 !== 0) {
+             checkBingo();
+        }
       }
 
       document.getElementById('usa-game').onclick = () => generateBoard(stateNames, GRID_USA);
       document.getElementById('east-coast-game').onclick = () => generateBoard(eastStates, GRID_USA);
       document.getElementById('kid-colors-game').onclick = () => generateBoard(colors, GRID_KIDS, true);
-      document.getElementById('generate-board').onclick = () => generateBoard(stateNames, GRID_USA);
+      
+      document.getElementById('generate-board').onclick = () => {
+        generateBoard(stateNames, GRID_USA); 
+      };
 
-      // Free Pick button: randomly selects one unmarked license plate cell (only for license plate games)
       document.getElementById('free-pick').onclick = () => {
         if (currentIsColorGame) {
           alert("Free Pick is only available for license plate games.");
           return;
         }
-        const unmarkedCells = document.querySelectorAll('#bingo-board .bingo-cell:not(.marked):not(.bonus-cell)');
+        const unmarkedCells = document.querySelectorAll('#bingo-board .bingo-cell:not(.marked):not([data-item="FREEPLAY"]):not([disabled])');
         if (unmarkedCells.length === 0) {
           alert("No available cells to pick.");
           return;
@@ -367,57 +526,44 @@
         randomCell.click();
       };
 
-      // Initialize default board
-      generateBoard(stateNames, GRID_USA);
-
+      let confettiAnimationId = null;
       function startConfetti(canvas) {
+        if (confettiAnimationId) stopConfetti(canvas); 
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         const confettis = Array.from({ length: 150 }, () => ({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          r: Math.random() * 6 + 4,
-          d: Math.random() * 40 + 10,
-          color: `hsl(${Math.random() * 360}, 100%, 50%)`,
-          tilt: Math.random() * 10 - 10
+          x: Math.random() * canvas.width, y: Math.random() * canvas.height - canvas.height, 
+          r: Math.random() * 6 + 4, d: Math.random() * 150 + 10, 
+          color: `hsl(${Math.random() * 360}, 100%, 60%)`,
+          tilt: Math.floor(Math.random() * 10) - 10,
+          tiltAngleIncremental: (Math.random() * 0.07) + .05, tiltAngle: 0
         }));
-
-        let animationId = null;
-        function draw() {
+        function drawConfetti() {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
-          confettis.forEach(c => {
-            ctx.beginPath();
-            ctx.arc(c.x, c.y, c.r, 0, 2 * Math.PI);
-            ctx.fillStyle = c.color;
-            ctx.fill();
+          confettis.forEach((c, i) => {
+            ctx.beginPath(); ctx.lineWidth = c.r / 1.5; ctx.strokeStyle = c.color;
+            ctx.moveTo(c.x + c.tilt + c.r, c.y); ctx.lineTo(c.x + c.tilt, c.y + c.tilt + c.r);
+            ctx.stroke();
+            c.tiltAngle += c.tiltAngleIncremental;
+            c.y += (Math.cos(c.d) + 3 + c.r / 2) / 2; c.x += Math.sin(c.d);
+            c.tilt = (Math.sin(c.tiltAngle - (i / 3))) * 15;
+            if (c.y > canvas.height + 20) confettis[i] = { ...c, x: Math.random() * canvas.width, y: -20, tiltAngle: 0 };
+            if (c.x > canvas.width + 20) confettis[i] = { ...c, x: -20 };
+            if (c.x < -20) confettis[i] = { ...c, x: canvas.width + 20 };
           });
-          update();
-          canvas.dataset.animating = animationId = requestAnimationFrame(draw);
+          confettiAnimationId = requestAnimationFrame(drawConfetti);
         }
-
-        function update() {
-          confettis.forEach(c => {
-            c.y += Math.cos(c.d / 10) + 1;
-            c.x += Math.sin(c.d);
-            if (c.y > canvas.height) c.y = -10;
-            if (c.x > canvas.width) c.x = 0;
-          });
-        }
-
-        draw();
-        canvas.dataset.animating = animationId;
+        drawConfetti();
       }
-
       function stopConfetti(canvas) {
-        if (canvas.dataset.animating) {
-          cancelAnimationFrame(parseInt(canvas.dataset.animating));
-          delete canvas.dataset.animating;
-          const ctx = canvas.getContext('2d');
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (confettiAnimationId) {
+          cancelAnimationFrame(confettiAnimationId); confettiAnimationId = null;
+          const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
       }
-    })();
+      generateBoard(stateNames, GRID_USA); 
+    });
   </script>
 </body>
 </html>
